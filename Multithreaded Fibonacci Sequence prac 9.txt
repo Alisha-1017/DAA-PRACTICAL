@@ -1,0 +1,31 @@
+import threading
+
+def fibonacci(index, result, lock):
+    if index == 0:
+        result[index] = 0
+    elif index == 1:
+        result[index] = 1
+    else:
+        a, b = 0, 1
+        for _ in range(2, index + 1):
+            a, b = b, a + b
+        result[index] = b
+    with lock:
+        print(f"Fibonacci[{index}] = {result[index]}")
+
+def generate_fibonacci(n):
+    result = [None] * n
+    lock = threading.Lock()
+    threads = []
+    for i in range(n):
+        thread = threading.Thread(target=fibonacci, args=(i, result, lock))
+        threads.append(thread)
+        thread.start()
+    for thread in threads:
+        thread.join()
+    print("\nFinal Fibonacci Sequence:")
+    print(result)
+
+if __name__ == "__main__":
+    n = int(input("Enter the number of Fibonacci numbers to generate: "))
+    generate_fibonacci(n)

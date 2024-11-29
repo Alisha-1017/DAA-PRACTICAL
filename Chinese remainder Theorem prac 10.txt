@@ -1,0 +1,26 @@
+def findX(y, m, k):
+    M = 1
+    X = 0
+    temp = 0
+    Mi = [0] * k
+    Z = [0] * k
+    for i in range(k):
+        M *= m[i]
+    for i in range(k):
+        Mi[i] = M // m[i]
+    for i in range(k):
+        z = 0
+        x = Mi[i]
+        while (z * x) % m[i] != 1:
+            z += 1
+        Z[i] = z
+    for i in range(k):
+        temp += y[i] * Z[i] * Mi[i]
+    X = temp % M
+    return X
+
+y = [1, 1, 3]
+m = [5, 7, 11]
+k = len(y)
+X = findX(y, m, k)
+print("The answer using CRT is:", X)

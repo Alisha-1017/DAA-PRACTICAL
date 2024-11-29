@@ -1,0 +1,41 @@
+import numpy as np
+
+def Partition_Matrix(A):
+    row, col = A.shape
+    n = row
+    half_n = n // 2
+    return A[:half_n, :half_n], A[:half_n, half_n:], A[half_n:, :half_n], A[half_n:, half_n:]
+
+def Find_S10(A, B):
+    A11, A12, A21, A22 = Partition_Matrix(A)
+    B11, B12, B21, B22 = Partition_Matrix(B)
+    return [
+        B12 - B22, A11 + A12, A21 + A22, B21 - B11, 
+        A11 + A22, B11 + B22, A12 - A22, B21 + B22, 
+        A11 - A21, B11 + B12
+    ]
+
+def Find_Product(A, B, S):
+    A11, A12, A21, A22 = Partition_Matrix(A)
+    B11, B12, B21, B22 = Partition_Matrix(B)
+    return [
+        np.dot(A11, S[0]), np.dot(S[1], B22), np.dot(S[2], B11),
+        np.dot(A22, S[3]), np.dot(S[4], S[5]), np.dot(S[6], S[7]),
+        np.dot(S[8], S[9])
+    ]
+
+def Find_Product_Terms(P):
+    C11 = P[4] + P[3] - P[1] + P[5]
+    C12 = P[0] + P[1]
+    C21 = P[2] + P[3]
+    C22 = P[4] + P[0] - P[2] - P[6]
+    return C11, C12, C21, C22
+
+A = np.asarray([[2, 3], [1, 4]])
+B = np.asarray([[3, 7], [5, 2]])
+S = Find_S10(A, B)
+P = Find_Product(A, B, S)
+C = Find_Product_Terms(P)
+C = np.block([[C[0], C[1]], [C[2], C[3]]])
+print("Resultant Matrix C:")
+print(C)
